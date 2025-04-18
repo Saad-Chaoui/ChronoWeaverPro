@@ -1,6 +1,7 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { generateTimelinePrediction } from "./gemini";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // API route for submitting email for waitlist (not connected to actual storage)
@@ -18,27 +19,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
   
-  // API route for demo form submission
-  app.post('/api/generate-prediction', (req, res) => {
-    const { goal, industry, timeframe, disruptions } = req.body;
-    
-    if (!goal || !industry || !timeframe) {
-      return res.status(400).json({ 
-        message: 'Missing required fields',
-        status: 'error'
+  // API route for demo form submission with Gemini AI integration
+  app.post('/api/generate-prediction', async (req: Request, res: Response) => {
+    try {
+      const { goal, industry, timeframe, disruptions } = req.body;
+      
+      if (!goal || !industry || !timeframe) {
+        return res.status(400).json({ 
+          message: 'Missing required fields',
+          status: 'error'
+        });
+      }
+      
+      // Generate prediction using Gemini AI
+      const prediction = await generateTimelinePrediction(
+        goal, 
+        industry, 
+        timeframe,
+        disruptions || ''
+      );
+      
+      return res.status(200).json({
+        message: 'Prediction generated successfully',
+        status: 'success',
+        prediction: prediction
+      });
+    } catch (error) {
+      console.error('Error generating prediction:', error);
+      return res.status(500).json({
+        message: 'Failed to generate prediction',
+        status: 'error',
+        error: error instanceof Error ? error.message : 'Unknown error'
       });
     }
-    
-    // This would normally connect to Gemini API for generating predictions
-    // For now just return a mock successful response
-    
-    // Backend AI integration needed here. Connect to Gemini API using a secure backend process and API Key stored in secrets.
-    return res.status(200).json({
-      message: 'Prediction generated successfully',
-      status: 'success',
-      // We're not generating mock data as per requirements, this would be real data from the AI API
-      requestData: { goal, industry, timeframe, disruptions }
-    });
   });
 
   const httpServer = createServer(app);

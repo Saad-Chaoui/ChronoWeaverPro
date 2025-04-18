@@ -1,11 +1,40 @@
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+
+// Types for API response
+interface TimelineScenario {
+  name: string;
+  probability: number;
+  description: string;
+  outcomes: {
+    name: string;
+    impact: string;
+    description: string;
+  }[];
+  recommendations: string[];
+}
+
+interface TimelinePrediction {
+  summary: string;
+  scenarios: TimelineScenario[];
+  insights: string[];
+}
+
+interface ApiResponse {
+  message: string;
+  status: string;
+  prediction: TimelinePrediction;
+}
 
 export default function DemoSection() {
   const { ref, controls } = useScrollAnimation();
+  const { toast } = useToast();
   const [isGenerating, setIsGenerating] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [predictionData, setPredictionData] = useState<TimelinePrediction | null>(null);
   const [formData, setFormData] = useState({
     goal: "",
     industry: "",
@@ -18,10 +47,14 @@ export default function DemoSection() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
   
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     // Validate form
     if (!formData.goal || !formData.industry || !formData.timeframe) {
-      alert("Please fill in all required fields");
+      toast({
+        title: "Missing information",
+        description: "Please fill in all required fields",
+        variant: "destructive"
+      });
       return;
     }
     
@@ -29,13 +62,39 @@ export default function DemoSection() {
     setIsGenerating(true);
     setShowResults(false);
     
-    // Simulate API call delay
-    setTimeout(() => {
+    try {
+      // Call the API to generate prediction
+      const response = await apiRequest<ApiResponse>('/api/generate-prediction', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      // Update state with the prediction data
+      if (response.prediction) {
+        setPredictionData(response.prediction);
+        setIsGenerating(false);
+        setShowResults(true);
+        
+        toast({
+          title: "Success!",
+          description: "Timeline prediction generated successfully",
+        });
+      } else {
+        throw new Error("No prediction data received");
+      }
+    } catch (error) {
+      console.error("Error generating prediction:", error);
       setIsGenerating(false);
-      setShowResults(true);
-    }, 2500);
-    
-    // Backend AI integration needed here. Connect to Gemini API using a secure backend process and API Key stored in secrets.
+      
+      toast({
+        title: "Generation failed",
+        description: error instanceof Error ? error.message : "Failed to generate timeline prediction. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
   
   return (
