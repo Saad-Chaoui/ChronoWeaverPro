@@ -109,11 +109,8 @@ export async function generateTimelinePrediction(
     ];
 
     console.log("Sending prompt to Gemini API...");
-    const result = await model.generateContent({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      generationConfig,
-      safetySettings,
-    });
+    // Using a simpler approach with less TypeScript complexity
+    const result = await model.generateContent(prompt);
     
     console.log("Response received from Gemini API");
     const response = await result.response;
@@ -131,20 +128,24 @@ export async function generateTimelinePrediction(
       console.error("Failed to parse Gemini response as JSON:", parseError);
       throw new Error("AI response format error");
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error generating prediction with Gemini AI:", error);
     
     // Check if it's an API key related error
-    if (error.message && error.message.includes("API Key")) {
+    if (error && error.message && typeof error.message === 'string' && error.message.includes("API Key")) {
       throw new Error("API key authentication failed. Please check your Gemini API key.");
     }
     
     // Check if it's a model related error
-    if (error.message && error.message.includes("model")) {
+    if (error && error.message && typeof error.message === 'string' && error.message.includes("model")) {
       throw new Error("Model error: " + error.message);
     }
     
     // Generic error fallback
-    throw new Error("Failed to generate prediction: " + (error.message || "Unknown error"));
+    const errorMessage = error && error.message && typeof error.message === 'string' 
+      ? error.message 
+      : "Unknown error";
+    
+    throw new Error("Failed to generate prediction: " + errorMessage);
   }
 }
