@@ -64,13 +64,13 @@ export default function DemoSection() {
     
     try {
       // Call the API to generate prediction
-      const response = await apiRequest('/api/generate-prediction', {
+      const response = await apiRequest<ApiResponse>('/api/generate-prediction', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
-      }) as unknown as ApiResponse;
+      });
       
       // Update state with the prediction data
       if (response.prediction) {
