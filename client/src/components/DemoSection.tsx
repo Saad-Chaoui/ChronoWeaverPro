@@ -64,13 +64,13 @@ export default function DemoSection() {
     
     try {
       // Call the API to generate prediction
-      const response = await apiRequest<ApiResponse>('/api/generate-prediction', {
+      const response = await apiRequest('/api/generate-prediction', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
-      });
+      }) as unknown as ApiResponse;
       
       // Update state with the prediction data
       if (response.prediction) {
@@ -235,13 +235,13 @@ export default function DemoSection() {
                   )}
                   
                   {/* Results state */}
-                  {showResults && (
+                  {showResults && predictionData && (
                     <div className="w-full h-full relative">
                       <div className="absolute left-0 right-0 top-1/2 transform -translate-y-1/2">
                         <div className="h-1 bg-gradient-to-r from-primary via-secondary to-accent rounded-full"></div>
                       </div>
                       
-                      {/* Timeline nodes */}
+                      {/* Timeline nodes - Present (always static) */}
                       <div className="absolute top-1/2 left-[10%] transform -translate-y-1/2 -translate-x-1/2">
                         <div className="w-8 h-8 rounded-full bg-muted border-2 border-primary flex items-center justify-center">
                           <div className="w-3 h-3 bg-primary rounded-full"></div>
@@ -252,54 +252,67 @@ export default function DemoSection() {
                         </div>
                       </div>
                       
-                      <div className="absolute top-1/4 left-[35%] transform -translate-y-1/2 -translate-x-1/2">
-                        <div className="w-8 h-8 rounded-full bg-muted border-2 border-secondary flex items-center justify-center">
-                          <div className="w-3 h-3 bg-secondary rounded-full"></div>
+                      {/* Scenario 1 - from Gemini */}
+                      {predictionData.scenarios.length > 0 && (
+                        <div className="absolute top-1/4 left-[35%] transform -translate-y-1/2 -translate-x-1/2">
+                          <div className="w-8 h-8 rounded-full bg-muted border-2 border-secondary flex items-center justify-center">
+                            <div className="w-3 h-3 bg-secondary rounded-full"></div>
+                          </div>
+                          <div className="absolute top-10 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+                            <div className="text-secondary font-semibold">{predictionData.scenarios[0].name}</div>
+                            <div className="text-xs text-gray-400 text-center">{predictionData.scenarios[0].probability}% Probability</div>
+                          </div>
+                          {/* Connection line */}
+                          <div className="absolute bottom-4 left-1/2 h-32 w-px bg-secondary/50"></div>
                         </div>
-                        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-                          <div className="text-secondary font-semibold">Pathway A</div>
-                          <div className="text-xs text-gray-400 text-center">73% Probability</div>
-                        </div>
-                        {/* Connection line */}
-                        <div className="absolute bottom-4 left-1/2 h-32 w-px bg-secondary/50"></div>
-                      </div>
+                      )}
                       
-                      <div className="absolute top-3/4 left-[35%] transform -translate-y-1/2 -translate-x-1/2">
-                        <div className="w-8 h-8 rounded-full bg-muted border-2 border-accent flex items-center justify-center">
-                          <div className="w-3 h-3 bg-accent rounded-full"></div>
+                      {/* Scenario 2 - from Gemini */}
+                      {predictionData.scenarios.length > 1 && (
+                        <div className="absolute top-3/4 left-[35%] transform -translate-y-1/2 -translate-x-1/2">
+                          <div className="w-8 h-8 rounded-full bg-muted border-2 border-accent flex items-center justify-center">
+                            <div className="w-3 h-3 bg-accent rounded-full"></div>
+                          </div>
+                          <div className="absolute top-10 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+                            <div className="text-accent font-semibold">{predictionData.scenarios[1].name}</div>
+                            <div className="text-xs text-gray-400 text-center">{predictionData.scenarios[1].probability}% Probability</div>
+                          </div>
+                          {/* Connection line */}
+                          <div className="absolute top-4 left-1/2 h-20 w-px bg-accent/50"></div>
                         </div>
-                        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-                          <div className="text-accent font-semibold">Pathway B</div>
-                          <div className="text-xs text-gray-400 text-center">27% Probability</div>
-                        </div>
-                        {/* Connection line */}
-                        <div className="absolute top-4 left-1/2 h-20 w-px bg-accent/50"></div>
-                      </div>
+                      )}
                       
-                      <div className="absolute top-1/4 left-[65%] transform -translate-y-1/2 -translate-x-1/2">
-                        <div className="w-8 h-8 rounded-full bg-muted border-2 border-secondary flex items-center justify-center">
-                          <div className="w-3 h-3 bg-secondary rounded-full"></div>
+                      {/* Outcome 1 - from Gemini */}
+                      {predictionData.scenarios.length > 0 && predictionData.scenarios[0].outcomes && predictionData.scenarios[0].outcomes.length > 0 && (
+                        <div className="absolute top-1/4 left-[65%] transform -translate-y-1/2 -translate-x-1/2">
+                          <div className="w-8 h-8 rounded-full bg-muted border-2 border-secondary flex items-center justify-center">
+                            <div className="w-3 h-3 bg-secondary rounded-full"></div>
+                          </div>
+                          <div className="absolute top-10 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+                            <div className="text-secondary font-semibold">{predictionData.scenarios[0].outcomes[0].name}</div>
+                            <div className="text-xs text-gray-400 text-center">{predictionData.scenarios[0].outcomes[0].impact}</div>
+                          </div>
+                          {/* Connection line */}
+                          <div className="absolute bottom-4 left-1/2 h-32 w-px bg-secondary/50"></div>
                         </div>
-                        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-                          <div className="text-secondary font-semibold">Outcome A1</div>
-                          <div className="text-xs text-gray-400 text-center">Growth +35%</div>
-                        </div>
-                        {/* Connection line */}
-                        <div className="absolute bottom-4 left-1/2 h-32 w-px bg-secondary/50"></div>
-                      </div>
+                      )}
                       
-                      <div className="absolute top-3/4 left-[65%] transform -translate-y-1/2 -translate-x-1/2">
-                        <div className="w-8 h-8 rounded-full bg-muted border-2 border-accent flex items-center justify-center">
-                          <div className="w-3 h-3 bg-accent rounded-full"></div>
+                      {/* Outcome 2 - from Gemini */}
+                      {predictionData.scenarios.length > 1 && predictionData.scenarios[1].outcomes && predictionData.scenarios[1].outcomes.length > 0 && (
+                        <div className="absolute top-3/4 left-[65%] transform -translate-y-1/2 -translate-x-1/2">
+                          <div className="w-8 h-8 rounded-full bg-muted border-2 border-accent flex items-center justify-center">
+                            <div className="w-3 h-3 bg-accent rounded-full"></div>
+                          </div>
+                          <div className="absolute top-10 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+                            <div className="text-accent font-semibold">{predictionData.scenarios[1].outcomes[0].name}</div>
+                            <div className="text-xs text-gray-400 text-center">{predictionData.scenarios[1].outcomes[0].impact}</div>
+                          </div>
+                          {/* Connection line */}
+                          <div className="absolute top-4 left-1/2 h-20 w-px bg-accent/50"></div>
                         </div>
-                        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-                          <div className="text-accent font-semibold">Outcome B1</div>
-                          <div className="text-xs text-gray-400 text-center">Growth +18%</div>
-                        </div>
-                        {/* Connection line */}
-                        <div className="absolute top-4 left-1/2 h-20 w-px bg-accent/50"></div>
-                      </div>
+                      )}
                       
+                      {/* Future state (always static) */}
                       <div className="absolute top-1/2 left-[90%] transform -translate-y-1/2 -translate-x-1/2">
                         <div className="w-8 h-8 rounded-full bg-muted border-2 border-gray-600 flex items-center justify-center">
                           <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
@@ -322,35 +335,73 @@ export default function DemoSection() {
                 </div>
                 
                 {/* Analysis panel */}
-                {showResults && (
+                {showResults && predictionData && (
                   <div className="mt-6">
                     <h4 className="font-display font-semibold text-xl mb-3">Analysis</h4>
                     <div className="bg-card rounded-lg border border-gray-700 p-4">
                       <div className="space-y-3">
+                        {/* Summary */}
                         <div className="flex items-center">
                           <div className="w-3 h-3 rounded-full bg-primary mr-2"></div>
-                          <h5 className="font-medium">Primary Trajectory</h5>
+                          <h5 className="font-medium">Summary</h5>
                         </div>
                         <p className="text-gray-300 text-sm pl-5">
-                          This scenario indicates a 73% probability of achieving your goals within the specified timeframe, assuming moderate market disruption.
+                          {predictionData.summary}
                         </p>
                         
-                        <div className="flex items-center">
-                          <div className="w-3 h-3 rounded-full bg-secondary mr-2"></div>
-                          <h5 className="font-medium">Alternative Pathway</h5>
-                        </div>
-                        <p className="text-gray-300 text-sm pl-5">
-                          An alternative scenario shows potential for accelerated growth if key technological adoption occurs in Q3.
-                        </p>
+                        {/* First Scenario */}
+                        {predictionData.scenarios.length > 0 && (
+                          <>
+                            <div className="flex items-center">
+                              <div className="w-3 h-3 rounded-full bg-secondary mr-2"></div>
+                              <h5 className="font-medium">{predictionData.scenarios[0].name}</h5>
+                            </div>
+                            <p className="text-gray-300 text-sm pl-5">
+                              {predictionData.scenarios[0].description}
+                            </p>
+                          </>
+                        )}
                         
-                        <div className="flex items-center">
-                          <div className="w-3 h-3 rounded-full bg-accent mr-2"></div>
-                          <h5 className="font-medium">Risk Factors</h5>
-                        </div>
-                        <p className="text-gray-300 text-sm pl-5">
-                          Primary risk vectors include regulatory changes (27% impact) and competitive landscape shifts (18% impact).
-                        </p>
+                        {/* Second Scenario */}
+                        {predictionData.scenarios.length > 1 && (
+                          <>
+                            <div className="flex items-center">
+                              <div className="w-3 h-3 rounded-full bg-accent mr-2"></div>
+                              <h5 className="font-medium">{predictionData.scenarios[1].name}</h5>
+                            </div>
+                            <p className="text-gray-300 text-sm pl-5">
+                              {predictionData.scenarios[1].description}
+                            </p>
+                          </>
+                        )}
+                        
+                        {/* Key Insights */}
+                        {predictionData.insights && predictionData.insights.length > 0 && (
+                          <>
+                            <div className="flex items-center mt-4">
+                              <div className="w-3 h-3 rounded-full bg-gray-400 mr-2"></div>
+                              <h5 className="font-medium">Key Insights</h5>
+                            </div>
+                            <ul className="text-gray-300 text-sm pl-8 list-disc space-y-1">
+                              {predictionData.insights.map((insight, index) => (
+                                <li key={index}>{insight}</li>
+                              ))}
+                            </ul>
+                          </>
+                        )}
                       </div>
+                      
+                      {/* Recommendations from first scenario */}
+                      {predictionData.scenarios.length > 0 && predictionData.scenarios[0].recommendations && predictionData.scenarios[0].recommendations.length > 0 && (
+                        <div className="mt-4 pt-4 border-t border-gray-700">
+                          <h5 className="font-medium mb-2">Strategic Recommendations</h5>
+                          <ul className="text-gray-300 text-sm pl-5 list-disc space-y-1">
+                            {predictionData.scenarios[0].recommendations.map((rec, index) => (
+                              <li key={index}>{rec}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                       
                       <div className="mt-4 pt-4 border-t border-gray-700">
                         <button type="button" className="text-primary flex items-center hover:text-white transition-colors">
