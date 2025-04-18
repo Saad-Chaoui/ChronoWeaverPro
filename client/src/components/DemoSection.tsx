@@ -215,7 +215,7 @@ export default function DemoSection() {
               
               <div>
                 <h3 className="font-display font-semibold text-2xl mb-6">Timeline Visualization</h3>
-                <div className="bg-card h-[400px] rounded-lg border border-gray-700 flex items-center justify-center timeline-grid p-6">
+                <div className="bg-card h-[500px] rounded-lg border border-gray-700 flex items-center justify-center timeline-grid p-6">
                   {/* Initial state */}
                   {!isGenerating && !showResults && (
                     <div className="text-center">
@@ -236,7 +236,7 @@ export default function DemoSection() {
                   
                   {/* Results state */}
                   {showResults && predictionData && (
-                    <div className="w-full h-full relative">
+                    <div className="w-full h-full relative pt-4">
                       <div className="absolute left-0 right-0 top-1/2 transform -translate-y-1/2">
                         <div className="h-1 bg-gradient-to-r from-primary via-secondary to-accent rounded-full"></div>
                       </div>
@@ -246,69 +246,69 @@ export default function DemoSection() {
                         <div className="w-8 h-8 rounded-full bg-muted border-2 border-primary flex items-center justify-center">
                           <div className="w-3 h-3 bg-primary rounded-full"></div>
                         </div>
-                        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-                          <div className="text-primary font-semibold">Present</div>
-                          <div className="text-xs text-gray-400 text-center">Current State</div>
+                        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 text-center w-24">
+                          <div className="text-primary font-semibold truncate">Present</div>
+                          <div className="text-xs text-gray-400">Current State</div>
                         </div>
                       </div>
                       
                       {/* Scenario 1 - from Gemini */}
                       {predictionData.scenarios.length > 0 && (
-                        <div className="absolute top-1/4 left-[35%] transform -translate-y-1/2 -translate-x-1/2">
+                        <div className="absolute top-[30%] left-[35%] transform -translate-y-1/2 -translate-x-1/2">
                           <div className="w-8 h-8 rounded-full bg-muted border-2 border-secondary flex items-center justify-center">
                             <div className="w-3 h-3 bg-secondary rounded-full"></div>
                           </div>
-                          <div className="absolute top-10 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-                            <div className="text-secondary font-semibold">{predictionData.scenarios[0].name}</div>
-                            <div className="text-xs text-gray-400 text-center">{predictionData.scenarios[0].probability}% Probability</div>
+                          <div className="absolute top-[-40px] left-1/2 transform -translate-x-1/2 text-center max-w-[180px]">
+                            <div className="text-secondary font-semibold text-sm line-clamp-2">{predictionData.scenarios[0].name}</div>
+                            <div className="text-xs text-gray-400">{predictionData.scenarios[0].probability}% Probability</div>
                           </div>
                           {/* Connection line */}
-                          <div className="absolute bottom-4 left-1/2 h-32 w-px bg-secondary/50"></div>
+                          <div className="absolute bottom-4 left-1/2 h-24 w-px bg-secondary/50"></div>
                         </div>
                       )}
                       
                       {/* Scenario 2 - from Gemini */}
                       {predictionData.scenarios.length > 1 && (
-                        <div className="absolute top-3/4 left-[35%] transform -translate-y-1/2 -translate-x-1/2">
+                        <div className="absolute top-[70%] left-[35%] transform -translate-y-1/2 -translate-x-1/2">
                           <div className="w-8 h-8 rounded-full bg-muted border-2 border-accent flex items-center justify-center">
                             <div className="w-3 h-3 bg-accent rounded-full"></div>
                           </div>
-                          <div className="absolute top-10 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-                            <div className="text-accent font-semibold">{predictionData.scenarios[1].name}</div>
-                            <div className="text-xs text-gray-400 text-center">{predictionData.scenarios[1].probability}% Probability</div>
+                          <div className="absolute bottom-[-40px] left-1/2 transform -translate-x-1/2 text-center max-w-[180px]">
+                            <div className="text-accent font-semibold text-sm line-clamp-2">{predictionData.scenarios[1].name}</div>
+                            <div className="text-xs text-gray-400">{predictionData.scenarios[1].probability}% Probability</div>
                           </div>
                           {/* Connection line */}
-                          <div className="absolute top-4 left-1/2 h-20 w-px bg-accent/50"></div>
+                          <div className="absolute top-4 left-1/2 h-24 w-px bg-accent/50"></div>
                         </div>
                       )}
                       
                       {/* Outcome 1 - from Gemini */}
                       {predictionData.scenarios.length > 0 && predictionData.scenarios[0].outcomes && predictionData.scenarios[0].outcomes.length > 0 && (
-                        <div className="absolute top-1/4 left-[65%] transform -translate-y-1/2 -translate-x-1/2">
+                        <div className="absolute top-[30%] left-[65%] transform -translate-y-1/2 -translate-x-1/2">
                           <div className="w-8 h-8 rounded-full bg-muted border-2 border-secondary flex items-center justify-center">
                             <div className="w-3 h-3 bg-secondary rounded-full"></div>
                           </div>
-                          <div className="absolute top-10 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-                            <div className="text-secondary font-semibold">{predictionData.scenarios[0].outcomes[0].name}</div>
-                            <div className="text-xs text-gray-400 text-center">{predictionData.scenarios[0].outcomes[0].impact}</div>
+                          <div className="absolute top-[-40px] left-1/2 transform -translate-x-1/2 text-center max-w-[180px]">
+                            <div className="text-secondary font-semibold text-sm line-clamp-2">{predictionData.scenarios[0].outcomes[0].name}</div>
+                            <div className="text-xs text-gray-400 line-clamp-1">{predictionData.scenarios[0].outcomes[0].impact}</div>
                           </div>
                           {/* Connection line */}
-                          <div className="absolute bottom-4 left-1/2 h-32 w-px bg-secondary/50"></div>
+                          <div className="absolute bottom-4 left-1/2 h-24 w-px bg-secondary/50"></div>
                         </div>
                       )}
                       
                       {/* Outcome 2 - from Gemini */}
                       {predictionData.scenarios.length > 1 && predictionData.scenarios[1].outcomes && predictionData.scenarios[1].outcomes.length > 0 && (
-                        <div className="absolute top-3/4 left-[65%] transform -translate-y-1/2 -translate-x-1/2">
+                        <div className="absolute top-[70%] left-[65%] transform -translate-y-1/2 -translate-x-1/2">
                           <div className="w-8 h-8 rounded-full bg-muted border-2 border-accent flex items-center justify-center">
                             <div className="w-3 h-3 bg-accent rounded-full"></div>
                           </div>
-                          <div className="absolute top-10 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-                            <div className="text-accent font-semibold">{predictionData.scenarios[1].outcomes[0].name}</div>
-                            <div className="text-xs text-gray-400 text-center">{predictionData.scenarios[1].outcomes[0].impact}</div>
+                          <div className="absolute bottom-[-40px] left-1/2 transform -translate-x-1/2 text-center max-w-[180px]">
+                            <div className="text-accent font-semibold text-sm line-clamp-2">{predictionData.scenarios[1].outcomes[0].name}</div>
+                            <div className="text-xs text-gray-400 line-clamp-1">{predictionData.scenarios[1].outcomes[0].impact}</div>
                           </div>
                           {/* Connection line */}
-                          <div className="absolute top-4 left-1/2 h-20 w-px bg-accent/50"></div>
+                          <div className="absolute top-4 left-1/2 h-24 w-px bg-accent/50"></div>
                         </div>
                       )}
                       
@@ -317,18 +317,26 @@ export default function DemoSection() {
                         <div className="w-8 h-8 rounded-full bg-muted border-2 border-gray-600 flex items-center justify-center">
                           <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
                         </div>
-                        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-                          <div className="text-gray-300 font-semibold">Future State</div>
-                          <div className="text-xs text-gray-400 text-center">Goal Achievement</div>
+                        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 text-center w-24">
+                          <div className="text-gray-300 font-semibold truncate">Future State</div>
+                          <div className="text-xs text-gray-400">Goal Achievement</div>
                         </div>
                       </div>
                       
-                      {/* SVG connections */}
-                      <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
-                        <path d="M80,200 C150,150 250,150 280,100" stroke="rgba(10, 239, 255, 0.5)" strokeWidth="2" fill="none" />
-                        <path d="M80,200 C150,250 250,250 280,300" stroke="rgba(255, 42, 109, 0.5)" strokeWidth="2" fill="none" />
-                        <path d="M280,100 C320,100 380,100 520,200" stroke="rgba(10, 239, 255, 0.5)" strokeWidth="2" fill="none" />
-                        <path d="M280,300 C320,300 380,300 520,200" stroke="rgba(255, 42, 109, 0.5)" strokeWidth="2" fill="none" />
+                      {/* SVG connections - upgraded with better curves */}
+                      <svg className="absolute inset-0 w-full h-full z-[-1]" preserveAspectRatio="none">
+                        {/* Present to Scenario 1 */}
+                        <path d="M80,250 C150,180 200,150 280,150" stroke="rgba(10, 239, 255, 0.5)" strokeWidth="2" fill="none" />
+                        {/* Present to Scenario 2 */}
+                        <path d="M80,250 C150,320 200,350 280,350" stroke="rgba(255, 42, 109, 0.5)" strokeWidth="2" fill="none" />
+                        {/* Scenario 1 to Outcome 1 */}
+                        <path d="M280,150 C350,150 450,150 520,150" stroke="rgba(10, 239, 255, 0.5)" strokeWidth="2" fill="none" />
+                        {/* Scenario 2 to Outcome 2 */}
+                        <path d="M280,350 C350,350 450,350 520,350" stroke="rgba(255, 42, 109, 0.5)" strokeWidth="2" fill="none" />
+                        {/* Outcome 1 to Future */}
+                        <path d="M520,150 C600,150 650,200 720,250" stroke="rgba(10, 239, 255, 0.5)" strokeWidth="2" fill="none" />
+                        {/* Outcome 2 to Future */}
+                        <path d="M520,350 C600,350 650,300 720,250" stroke="rgba(255, 42, 109, 0.5)" strokeWidth="2" fill="none" />
                       </svg>
                     </div>
                   )}
