@@ -1,7 +1,15 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
+import dotenv from 'dotenv';
+
+// Ensure environment variables are loaded
+dotenv.config();
+
+// Get the API key from environment variables
+const apiKey = process.env.GEMINI_API_KEY || "";
+console.log("API Key available:", apiKey ? "Yes (length: " + apiKey.length + ")" : "No");
 
 // Initialize the Google Generative AI with the API key
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+const genAI = new GoogleGenerativeAI(apiKey);
 
 // Model to use - gemini-2.0-flash is the model specified in your API key
 const MODEL_NAME = "gemini-2.0-flash";
@@ -73,8 +81,41 @@ export async function generateTimelinePrediction(
       Keep the total response compact but insightful.
     `;
 
-    // Generate content
-    const result = await model.generateContent(prompt);
+    // Generate content with specific safety settings and response format
+    const generationConfig = {
+      temperature: 0.7,
+      topP: 0.8,
+      topK: 40,
+      maxOutputTokens: 2048,
+    };
+
+    const safetySettings = [
+      {
+        category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+      }
+    ];
+
+    console.log("Sending prompt to Gemini API...");
+    const result = await model.generateContent({
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      generationConfig,
+      safetySettings,
+    });
+    
+    console.log("Response received from Gemini API");
     const response = await result.response;
     const text = response.text();
     
@@ -92,6 +133,18 @@ export async function generateTimelinePrediction(
     }
   } catch (error) {
     console.error("Error generating prediction with Gemini AI:", error);
-    throw new Error("Failed to generate prediction");
+    
+    // Check if it's an API key related error
+    if (error.message && error.message.includes("API Key")) {
+      throw new Error("API key authentication failed. Please check your Gemini API key.");
+    }
+    
+    // Check if it's a model related error
+    if (error.message && error.message.includes("model")) {
+      throw new Error("Model error: " + error.message);
+    }
+    
+    // Generic error fallback
+    throw new Error("Failed to generate prediction: " + (error.message || "Unknown error"));
   }
 }
