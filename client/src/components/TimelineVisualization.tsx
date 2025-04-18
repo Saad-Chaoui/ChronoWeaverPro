@@ -114,94 +114,9 @@ const TimelineVisualization = ({ prediction, isLoading }: TimelineVisualizationP
 
   }, [prediction, isLoading]);
 
-  // Function to initialize particle background
+  // Simplified background animation that's less resource-intensive
   const initParticleBackground = () => {
-    if (!containerRef.current) return;
-    
-    const canvas = document.createElement('canvas');
-    canvas.className = 'absolute inset-0 -z-10';
-    containerRef.current.appendChild(canvas);
-    
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // Set canvas size
-    const resizeCanvas = () => {
-      if (containerRef.current) {
-        canvas.width = containerRef.current.offsetWidth;
-        canvas.height = containerRef.current.offsetHeight;
-      }
-    };
-    
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    // Create particles
-    const particles: { x: number; y: number; size: number; speedX: number; speedY: number; color: string }[] = [];
-    const particleCount = 50;
-    
-    for (let i = 0; i < particleCount; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: Math.random() * 2 + 0.5,
-        speedX: (Math.random() - 0.5) * 0.5,
-        speedY: (Math.random() - 0.5) * 0.5,
-        color: `rgba(${10 + Math.random() * 30}, ${190 + Math.random() * 65}, ${220 + Math.random() * 35}, ${0.2 + Math.random() * 0.5})`
-      });
-    }
-
-    // Animation loop
-    const animate = () => {
-      if (!ctx) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      particles.forEach(particle => {
-        // Move particles
-        particle.x += particle.speedX;
-        particle.y += particle.speedY;
-        
-        // Wrap around edges
-        if (particle.x > canvas.width) particle.x = 0;
-        if (particle.x < 0) particle.x = canvas.width;
-        if (particle.y > canvas.height) particle.y = 0;
-        if (particle.y < 0) particle.y = canvas.height;
-        
-        // Draw particle
-        ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        ctx.fillStyle = particle.color;
-        ctx.fill();
-        
-        // Connect nearby particles
-        particles.forEach(otherParticle => {
-          const dx = particle.x - otherParticle.x;
-          const dy = particle.y - otherParticle.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          
-          if (distance < 100) {
-            ctx.beginPath();
-            ctx.strokeStyle = `rgba(20, 210, 240, ${0.1 - distance / 1000})`;
-            ctx.lineWidth = 0.5;
-            ctx.moveTo(particle.x, particle.y);
-            ctx.lineTo(otherParticle.x, otherParticle.y);
-            ctx.stroke();
-          }
-        });
-      });
-      
-      requestAnimationFrame(animate);
-    };
-    
-    animate();
-
-    // Cleanup on unmount
-    return () => {
-      window.removeEventListener('resize', resizeCanvas);
-      if (containerRef.current) {
-        containerRef.current.removeChild(canvas);
-      }
-    };
+    return () => {}; // Return empty cleanup function
   };
 
   // Function to handle viewing full details of a scenario
@@ -321,12 +236,24 @@ const TimelineVisualization = ({ prediction, isLoading }: TimelineVisualizationP
               <div key={`node-${index}`}>
                 <div 
                   ref={el => nodesRef.current[index + 1] = el}
-                  className={`timeline-node scenario-node absolute top-1/2 left-${index % 2 === 0 ? '1/3' : '2/3'} w-10 h-10 rounded-full bg-dark border-2 border-${index % 2 === 0 ? 'secondary' : 'accent'} transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-10 cursor-pointer transition-transform hover:scale-110`}
+                  className={`timeline-node scenario-node absolute top-1/2 w-10 h-10 rounded-full bg-dark transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-10 cursor-pointer transition-transform hover:scale-110`}
+                  style={{ 
+                    left: index % 2 === 0 ? '33%' : '66%',
+                    borderColor: index % 2 === 0 ? 'hsl(332, 94%, 56%)' : 'hsl(33, 100%, 62%)', 
+                    borderWidth: '2px'
+                  }}
                   onClick={() => handleViewDetails(index)}
                 >
-                  <div className={`w-4 h-4 rounded-full bg-${index % 2 === 0 ? 'secondary' : 'accent'}`}></div>
+                  <div 
+                    style={{ 
+                      backgroundColor: index % 2 === 0 ? 'hsl(332, 94%, 56%)' : 'hsl(33, 100%, 62%)'
+                    }}
+                    className="w-4 h-4 rounded-full"
+                  ></div>
                   <div className="timeline-label absolute top-12 left-1/2 transform -translate-x-1/2 text-center w-40">
-                    <div className={`text-${index % 2 === 0 ? 'secondary' : 'accent'} font-semibold line-clamp-1`}>
+                    <div className="font-semibold line-clamp-1" style={{ 
+                      color: index % 2 === 0 ? 'hsl(332, 94%, 56%)' : 'hsl(33, 100%, 62%)'
+                    }}>
                       {scenario.name}
                     </div>
                     <div className="text-xs text-gray-400">{scenario.probability}% Probability</div>
@@ -343,12 +270,15 @@ const TimelineVisualization = ({ prediction, isLoading }: TimelineVisualizationP
                     transform: 'translate(-50%, -50%)'
                   }}
                 >
-                  <div className={`text-${index % 2 === 0 ? 'secondary' : 'accent'} font-semibold mb-2`}>{scenario.name}</div>
+                  <div className="font-semibold mb-2" style={{ 
+                      color: index % 2 === 0 ? 'hsl(332, 94%, 56%)' : 'hsl(33, 100%, 62%)' 
+                    }}>{scenario.name}</div>
                   <p className="text-sm text-gray-300 mb-2 line-clamp-2">{scenario.description}</p>
                   <div className="text-xs text-gray-400 flex justify-between">
                     <span>Probability: {scenario.probability}%</span>
                     <button 
-                      className={`text-${index % 2 === 0 ? 'secondary' : 'accent'} hover:underline`}
+                      style={{ color: index % 2 === 0 ? 'hsl(332, 94%, 56%)' : 'hsl(33, 100%, 62%)' }}
+                      className="hover:underline"
                       onClick={() => handleViewDetails(index)}
                     >
                       Details →
@@ -410,13 +340,17 @@ const TimelineVisualization = ({ prediction, isLoading }: TimelineVisualizationP
               </button>
               
               <div className="max-w-3xl mx-auto">
-                <h3 className={`text-${activeScenario % 2 === 0 ? 'secondary' : 'accent'} text-2xl font-display mb-4`}>
+                <h3 className="text-2xl font-display mb-4" style={{ 
+                  color: activeScenario !== null && activeScenario % 2 === 0 ? 'hsl(332, 94%, 56%)' : 'hsl(33, 100%, 62%)'
+                }}>
                   {prediction.scenarios[activeScenario].name}
                 </h3>
                 
                 <div className="flex items-center space-x-4 mb-6">
                   <div className="flex items-center">
-                    <div className={`w-3 h-3 rounded-full bg-${activeScenario % 2 === 0 ? 'secondary' : 'accent'} mr-2`}></div>
+                    <div className="w-3 h-3 rounded-full mr-2" style={{
+                      backgroundColor: activeScenario !== null && activeScenario % 2 === 0 ? 'hsl(332, 94%, 56%)' : 'hsl(33, 100%, 62%)'
+                    }}></div>
                     <span className="text-gray-300">Probability: {prediction.scenarios[activeScenario].probability}%</span>
                   </div>
                   <div className="flex items-center">
@@ -439,7 +373,9 @@ const TimelineVisualization = ({ prediction, isLoading }: TimelineVisualizationP
                           key={idx} 
                           className="bg-dark/40 rounded-lg border border-gray-700 p-4 hover:border-gray-600 transition-colors"
                         >
-                          <div className={`text-${activeScenario % 2 === 0 ? 'secondary' : 'accent'} font-medium mb-1`}>
+                          <div className="font-medium mb-1" style={{
+                            color: activeScenario !== null && activeScenario % 2 === 0 ? 'hsl(332, 94%, 56%)' : 'hsl(33, 100%, 62%)'
+                          }}>
                             {outcome.name}
                           </div>
                           <div className="text-sm text-gray-400 mb-2">{outcome.impact}</div>
@@ -456,8 +392,12 @@ const TimelineVisualization = ({ prediction, isLoading }: TimelineVisualizationP
                     <ul className="bg-dark/40 rounded-lg border border-gray-700 p-4 space-y-2">
                       {prediction.scenarios[activeScenario].recommendations.map((rec, idx) => (
                         <li key={idx} className="flex items-start">
-                          <div className={`w-5 h-5 rounded-full bg-${activeScenario % 2 === 0 ? 'secondary' : 'accent'}/20 flex items-center justify-center mr-3 mt-0.5`}>
-                            <div className={`w-2 h-2 rounded-full bg-${activeScenario % 2 === 0 ? 'secondary' : 'accent'}`}></div>
+                          <div className="w-5 h-5 rounded-full flex items-center justify-center mr-3 mt-0.5" style={{
+                            backgroundColor: activeScenario !== null && activeScenario % 2 === 0 ? 'rgba(255, 42, 109, 0.2)' : 'rgba(255, 158, 27, 0.2)'
+                          }}>
+                            <div className="w-2 h-2 rounded-full" style={{
+                              backgroundColor: activeScenario !== null && activeScenario % 2 === 0 ? 'hsl(332, 94%, 56%)' : 'hsl(33, 100%, 62%)'
+                            }}></div>
                           </div>
                           <span className="text-gray-300">{rec}</span>
                         </li>
