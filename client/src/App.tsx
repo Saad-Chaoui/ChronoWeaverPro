@@ -7,6 +7,7 @@ import Home from "@/pages/Home";
 import NotFound from "@/pages/not-found";
 import { useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
+import BackgroundAnimation from "@/components/BackgroundAnimation";
 
 function Router() {
   return (
@@ -30,6 +31,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <BackgroundAnimation />
         <Toaster />
         <Router />
       </TooltipProvider>
