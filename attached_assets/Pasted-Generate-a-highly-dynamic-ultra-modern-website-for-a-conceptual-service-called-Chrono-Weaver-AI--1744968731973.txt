@@ -1,0 +1,44 @@
+Generate a highly dynamic, ultra-modern website for a conceptual service called 'Chrono Weaver AI'.
+Core Concept: Chrono Weaver AI is a fictional platform that uses advanced AI (powered conceptually by a multimodal model like Gemini) to analyze historical data, trends, and user inputs (goals, industry, potential disruptions) to generate predictive 'future scenarios' or 'potential timelines'. Users can explore these visualized timelines interactively.
+Design & Aesthetics:
+Overall Mood: Futuristic, sleek, sophisticated, slightly mysterious, trustworthy, data-driven.
+Layout: Asymmetric grids, generous white space (or dark space), dynamic content loading.
+Color Palette: Deep dark background (like charcoal or midnight blue) with vibrant, energetic accent colors (e.g., electric cyan, neon magenta, glowing orange) used sparingly for highlights, calls-to-action, and data visualizations.
+Typography: Clean, modern sans-serif fonts. Use varied weights for hierarchy. Maybe a slightly stylized font for main headings.
+Imagery/Visuals: Abstract geometric patterns, glowing network/neural net motifs, subtle holographic or light-trail effects, perhaps placeholders for dynamically generated timeline visualizations. Use high-quality, abstract background visuals. Avoid generic stock photos.
+Key Sections & Features:
+Hero Section:
+Compelling Headline: e.g., "Navigate Tomorrow, Today." or "Weave Your Optimal Future."
+Brief Sub-headline explaining Chrono Weaver AI.
+Subtle, looping background animation (e.g., slowly shifting geometric patterns, abstract data streams).
+Primary Call-to-Action (CTA): e.g., "Explore Scenarios" or "Start Weaving".
+How It Works:
+Use 3-4 steps visually represented.
+Icons + Short Text for each step (e.g., Input Data -> AI Analysis -> Visualize Timelines -> Refine & Explore).
+Use scroll-triggered animations to reveal each step sequentially. Fade-ins and slight upward motion.
+Interactive Demo Placeholder:
+A dedicated section titled "Timeline Explorer (Demo)".
+Include input fields (placeholders) for 'Goal', 'Industry', 'Time Horizon'.
+A button "Generate Prediction".
+Below the button, include a placeholder area where a visualized timeline would appear (this could be a static futuristic graph graphic initially).
+Crucially: Add a note in the code comments or a visually distinct text element on the generated page saying: "Backend AI integration needed here. Connect to Gemini API using a secure backend process and API Key stored in secrets." This explicitly tells you where to add the logic using your key later.
+Features/Benefits:
+Use sleek cards or expanding sections.
+Highlight benefits like "Predictive Insights", "Risk Mitigation", "Opportunity Identification".
+Use subtle hover animations on cards (e.g., lift, glow, revealing more text).
+Use Cases:
+Showcase applications across different sectors (e.g., Finance, Tech, Urban Planning). Simple icons and brief descriptions.
+Testimonials/Trust Signals (Placeholder):
+Simple placeholder for future client quotes.
+Footer:
+Minimalist design with essential links (Privacy, Terms) and a copyright notice.
+Animations & Interactivity:
+Loading Animation: A simple, futuristic pre-loader.
+Scroll Animations: Smooth parallax effects on background elements; fade-in and slide-up animations for content sections as they enter the viewport.
+Hover Effects: Interactive feedback on buttons and links (e.g., subtle glow, slight transform). Cards/features should have engaging hover states.
+Microinteractions: Small, delightful animations on UI elements to enhance user experience.
+Technology Hints (for Replit AI):
+Use modern HTML5, CSS3 (Flexbox/Grid), and JavaScript.
+Ensure responsiveness across devices (desktop, tablet, mobile).
+Consider frameworks like Tailwind CSS if the AI supports it well for rapid styling, or use clean custom CSS.
+Goal: The generated website should look functional and highly polished, clearly communicating the futuristic concept and providing the structural basis and visual placeholders for later backend AI integration."
