@@ -108,13 +108,12 @@ These instructions will help you set up the Chrono Weaver AI front-end and serve
 4. Push to the branch: `git push origin feature/YourFeature`.
 5. Open a Pull Request.
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the review process.
 
 ---
 
 ## 📜 License
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+This project is licensed under the MIT License.
 
 ---
 
